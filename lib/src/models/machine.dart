@@ -22,7 +22,8 @@ class Machine {
   static List<Machine> listFromJson(List<dynamic>? json) =>
       json == null ? [] : json.map((e) => Machine.fromJson(e)).toList();
 
-  String toHtml() => "<h6 class = 'machine'>$id: ${status.toJson()}</h6></br>";
+  String toHtml() =>
+      "<h6 class = 'machine'>$id: ${status.toJson()}</h6></br>\n";
   static String toHtmlDocument(List<Machine> machines) {
     String _machines = '';
     for (var macihne in machines) {
@@ -41,12 +42,7 @@ class Machine {
   static List<Machine> fromHtml(String html) {
     int start = html.indexOf('<body>') + 6;
     int end = html.indexOf('</body>');
-    html = html
-        .substring(start, end)
-        .trim()
-        .replaceAll(' ', '')
-        .replaceAll(',', '')
-        .replaceAll(RegExp(r'[()]'), '');
+    html = html.substring(start, end).trim().replaceAll(RegExp(r'[()], '), '');
     final strings = html.split('</h6></br>');
     print(strings);
     for (var string in strings) {
@@ -65,5 +61,28 @@ class Machine {
       machines.add(Machine(id: id, status: machineStatus));
     }
     return machines;
+  }
+
+  String toXml() {
+    return '''
+    <machine>
+      <id>$id</id>
+      <status>${status.toJson()}</status>
+    </machine>'''
+            .trimLeft() +
+        '\n';
+  }
+
+  static String toXmlDocument(List<Machine> machines) {
+    String docuemnt = '<?xml version="1.0" encoding="UTF-8"?>\n';
+    for (var machine in machines) {
+      docuemnt += machine.toXml();
+    }
+    return docuemnt;
+  }
+
+  @override
+  String toString() {
+    return '{"id": $id, "status": ${status.value} }';
   }
 }

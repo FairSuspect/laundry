@@ -7,8 +7,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:laundry/src/models/machine.dart';
 import 'package:laundry/src/models/machine_status.dart';
-
-import '../lib/src/sample_feature/file.dart';
+import 'package:laundry/src/sample_feature/file.dart';
 
 void main() {
   group("Html parser", () {
@@ -22,11 +21,24 @@ void main() {
   group("Json parser", () {
     test("Three good machines", () {
       final json = testMachines.map((e) => e.toJson()).toList();
+      saveFile('index.json', json.toString());
       final machines = Machine.listFromJson(json);
+      String jsonString = '[';
+      for (var machine in machines) {
+        jsonString += machine.toString();
+        if (machine != machines.last) {
+          jsonString += ',';
+        }
+      }
+      jsonString += ']';
+      saveFile('text.json', jsonString);
     });
   });
   group("XML parser", () {
-    test("Three good machines", () {});
+    test("Three good machines", () {
+      final xml = Machine.toXmlDocument(testMachines);
+      saveFile('index.xml', xml);
+    });
   });
 }
 
