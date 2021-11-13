@@ -44,10 +44,7 @@ class Machine {
     int end = html.indexOf('</body>');
     html = html.substring(start, end).trim().replaceAll(RegExp(r'[()], '), '');
     final strings = html.split('</h6></br>');
-    print(strings);
-    for (var string in strings) {
-      print("item: $string");
-    }
+
     List<Machine> machines = [];
     for (var string in strings) {
       final int idStart = string.indexOf('>') + 1;
@@ -65,12 +62,8 @@ class Machine {
 
   String toXml() {
     return '''
-    <machine>
-      <id>$id</id>
-      <status>${status.toJson()}</status>
-    </machine>'''
-            .trimLeft() +
-        '\n';
+<machine><id>$id</id><status>${status.toJson()}</status></machine>'''
+        .trimLeft();
   }
 
   static String toXmlDocument(List<Machine> machines) {
@@ -79,6 +72,23 @@ class Machine {
       docuemnt += machine.toXml();
     }
     return docuemnt;
+  }
+
+  static List<Machine> listFromXml(String xml) {
+    List<Machine> machines = [];
+    xml = xml.replaceAll('<?xml version="1.0" encoding="UTF-8"?>\n', '');
+    List<String> _machines = xml.split('</machine>');
+    for (var machine in _machines) {
+      int startIndex = machine.indexOf("<id>") + 4;
+      int endIndex = machine.indexOf("</id>");
+      if (startIndex == 3 || endIndex == -1) continue;
+      int id = int.parse(machine.substring(startIndex, endIndex));
+      startIndex = machine.indexOf("<status>") + 8;
+      endIndex = machine.indexOf("</status>");
+      int status = int.parse(machine.substring(startIndex, endIndex));
+      machines.add(Machine(id: id, status: MachineStatus.fromJson(status)!));
+    }
+    return machines;
   }
 
   @override

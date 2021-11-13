@@ -16,6 +16,7 @@ void main() {
       saveFile('index.html', html);
 
       final machines = Machine.fromHtml(html);
+      print(machines);
     });
   });
   group("Json parser", () {
@@ -32,12 +33,15 @@ void main() {
       }
       jsonString += ']';
       saveFile('text.json', jsonString);
+      print(machines);
     });
   });
   group("XML parser", () {
     test("Three good machines", () {
       final xml = Machine.toXmlDocument(testMachines);
       saveFile('index.xml', xml);
+      final machines = Machine.listFromXml(xml);
+      print(machines);
     });
   });
 }

@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:laundry/src/models/machine.dart';
-import 'package:laundry/src/models/machine_status.dart';
-import 'package:laundry/src/sample_feature/file.dart';
 
 import '../settings/settings_view.dart';
-import 'sample_item.dart';
+import 'sample_controller.dart';
 import 'sample_item_details_view.dart';
 
 /// Displays a list of SampleItems.
@@ -15,16 +12,10 @@ class SampleItemListView extends StatelessWidget {
 
   static const routeName = '/';
 
-  final List<Machine> items = [];
+  final SampleController controller = SampleController();
 
   @override
   Widget build(BuildContext context) {
-    items.addAll([
-      Machine(id: 1, status: MachineStatus.busy),
-      Machine(id: 2, status: MachineStatus.busy),
-      Machine(id: 3, status: MachineStatus.ready),
-    ]);
-    saveFile('index.html', Machine.toHtmlDocument(items));
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sample Items'),
@@ -52,9 +43,9 @@ class SampleItemListView extends StatelessWidget {
         // scroll position when a user leaves and returns to the app after it
         // has been killed while running in the background.
         restorationId: 'sampleItemListView',
-        itemCount: items.length,
+        itemCount: controller.items.length,
         itemBuilder: (BuildContext context, int index) {
-          final item = items[index];
+          final item = controller.items[index];
 
           return ListTile(
               title: Text(item.status.toString()),
@@ -62,6 +53,7 @@ class SampleItemListView extends StatelessWidget {
                 // Display the Flutter Logo image asset.
                 child: Text('${item.id}'),
               ),
+              trailing: Text(controller.trailingText(item, index)),
               onTap: () {
                 // Navigate to the details page. If the user leaves and returns to
                 // the app after it has been killed while running in the
