@@ -50,4 +50,10 @@ final List<Machine> testMachines = [
   Machine(id: 1, status: MachineStatus.busy),
   Machine(id: 2, status: MachineStatus.busy),
   Machine(id: 3, status: MachineStatus.ready),
+  Machine(id: 4, status: MachineStatus.notOperational),
+  Machine(id: 5, status: MachineStatus.notOperational),
+  Machine(id: 6, status: MachineStatus.notOperational),
+  Machine(id: 7, status: MachineStatus.busy),
+  Machine(id: 8, status: MachineStatus.ready),
+  Machine(id: 9, status: MachineStatus.notOperational),
 ];

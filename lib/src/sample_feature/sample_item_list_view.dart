@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:laundry/src/mqtt/mqtt_view.dart';
 
 import '../settings/settings_view.dart';
 import 'sample_controller.dart';
@@ -27,6 +28,15 @@ class SampleItemListView extends StatelessWidget {
               // to the app after it has been killed while running in the
               // background, the navigation stack is restored.
               Navigator.restorablePushNamed(context, SettingsView.routeName);
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.connect_without_contact),
+            onPressed: () {
+              // Navigate to the settings page. If the user leaves and returns
+              // to the app after it has been killed while running in the
+              // background, the navigation stack is restored.
+              Navigator.restorablePushNamed(context, MqttView.routeName);
             },
           ),
         ],
