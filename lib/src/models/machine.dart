@@ -2,7 +2,7 @@ import 'machine_status.dart';
 
 class Machine {
   final int id;
-  final MachineStatus status;
+  MachineStatus status;
   Machine({required this.id, required this.status});
 
   factory Machine.fromJson(Map<String, dynamic> json) {
