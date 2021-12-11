@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:laundry/src/mock/mock_controller.dart';
+import 'package:laundry/src/mock/mock_view.dart';
 import 'package:laundry/src/models/machine.dart';
 import 'package:laundry/src/models/machine_status.dart';
 import 'package:laundry/src/mqtt/mqtt_contoller.dart';
@@ -58,14 +60,36 @@ class SampleController with ChangeNotifier {
     notifyListeners();
   }
 
-  void onMachineTap(Machine machine) {
-    machine.status = MachineStatus.busy;
+  void onMachineTap(BuildContext context, Machine machine) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => MockView(
+        controller: MockController(
+          machine,
+          onChanged: (status) {
+            machine.status = status!;
+            sendData(machine);
+          },
+        ),
+      ),
+    ));
+    // machine.status = MachineStatus.busy;
+    // final pubTopic = 'machine_${machine.id}';
+
+    // final builder = MqttClientPayloadBuilder();
+    // builder.addString("$machine");
+    // mqttController.client
+    //     .publishMessage(pubTopic, MqttQos.atLeastOnce, builder.payload!);
+    // notifyListeners();
+  }
+
+  void sendData(Machine machine) {
     final pubTopic = 'machine_${machine.id}';
 
     final builder = MqttClientPayloadBuilder();
+    print(machine);
     builder.addString("$machine");
     mqttController.client
-        .publishMessage(pubTopic, MqttQos.atLeastOnce, builder.payload!);
+        .publishMessage(pubTopic, MqttQos.exactlyOnce, builder.payload!);
     notifyListeners();
   }
 
@@ -79,6 +103,22 @@ class SampleController with ChangeNotifier {
     mqttController.client
         .publishMessage(pubTopic, MqttQos.exactlyOnce, builder.payload!);
     notifyListeners();
+  }
+
+  Widget trailing(MachineStatus status) {
+    late IconData icon = Icons.device_unknown;
+    switch (status) {
+      case MachineStatus.busy:
+        icon = Icons.access_time;
+        break;
+      case MachineStatus.notOperational:
+        icon = Icons.not_interested;
+        break;
+      case MachineStatus.ready:
+        icon = Icons.done;
+        break;
+    }
+    return Icon(icon);
   }
 
   String trailingText(Machine model, int index) {

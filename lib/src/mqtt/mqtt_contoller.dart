@@ -22,7 +22,7 @@ class MqttController with ChangeNotifier {
   Future<MqttServerClient> connect() async {
     status = 'Uknown';
     notifyListeners();
-    final int _index = Random().nextInt(10);
+    final int _index = Random().nextInt(10000);
     client = MqttServerClient.withPort(
         'mqtt.eclipseprojects.io', 'flutter_client_$_index', 1883)
       ..logging(on: true)

@@ -8,9 +8,9 @@ class MachineStatus {
   /// The underlying value of this enum member.
   final int value;
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is MachineStatus && other.value == value;
+  // @override
+  // bool operator ==(Object other) =>
+  //     identical(this, other) || other is MachineStatus && other.value == value;
 
   @override
   int get hashCode => toString().hashCode;

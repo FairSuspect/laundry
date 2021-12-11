@@ -88,12 +88,11 @@ class SampleItemListView extends StatelessWidget {
                 return ListTile(
                   title: Text(item.status.toString()),
                   leading: CircleAvatar(
-                    // Display the Flutter Logo image asset.
                     child: Text('${item.id}'),
                   ),
-                  trailing: Text(controller.trailingText(item, index)),
+                  trailing: controller.trailing(item.status),
                   onTap: () {
-                    controller.onMachineTap(controller.items[index]);
+                    controller.onMachineTap(context, item);
                   },
                   onLongPress: () {
                     controller.onMachineLongTap(controller.items[index]);
