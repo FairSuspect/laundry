@@ -1,10 +1,14 @@
+import 'dart:io';
 import 'dart:math';
 
+import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:flutter/material.dart';
 import 'package:laundry/src/models/machine.dart';
 import 'package:laundry/src/models/machine_status.dart';
+import 'package:laundry/src/services/dotenv.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
+import 'package:path_provider/path_provider.dart';
 
 class MqttController with ChangeNotifier {
   MqttController() {
@@ -16,15 +20,37 @@ class MqttController with ChangeNotifier {
   // void Function(List<MqttReceivedMessage<MqttMessage>> data) onMessage;
 
   String status = 'Uknown';
-
+  static const projectId = 'shining-env-334012';
   late MqttServerClient client;
   late Stream<List<MqttReceivedMessage<MqttMessage>>>? stream;
   Future<MqttServerClient> connect() async {
     status = 'Uknown';
     notifyListeners();
-    final int _index = Random().nextInt(10000);
+    // final jwt = JWT(
+    //   {
+    //     "iat": DateTime.now().millisecondsSinceEpoch * 1000,
+    //     "exp": DateTime.now().millisecondsSinceEpoch * 1000 +
+    //         20 * 60, // 20 minutes
+    //     "aud": projectId,
+    //   },
+    // );
+    // final _key =
+    //     jwt.sign(SecretKey(File('rsa_private.pem').readAsStringSync()));
+    // final dir = Directory.current;
+    // final token =
+    //     JWT.verify(_key, SecretKey(File('rsa_private.pem').readAsStringSync()));
+    // print(token.payload);
+    // JWTAlgorithm.ES256;
+    // final int _index = Random().nextInt(10000);
+
+    final index = Random().nextInt(100);
     client = MqttServerClient.withPort(
-        'mqtt.eclipseprojects.io', 'flutter_client_$_index', 1883)
+        '497f5615f9534f0b93945ab950868f16.s2.eu.hivemq.cloud',
+        '497f5615f9534f0b93945ab950868f16$index',
+        8883)
+      ..secure = true
+      ..securityContext = SecurityContext.defaultContext
+      ..keepAlivePeriod = 20
       ..logging(on: true)
       ..onConnected = onConnected
       ..onDisconnected = onDisconnected
@@ -33,6 +59,7 @@ class MqttController with ChangeNotifier {
       ..onSubscribeFail = onSubscribeFail
       ..pongCallback = pong;
     stream = client.updates;
+
     // stream = client.updates?.listen((List<MqttReceivedMessage<MqttMessage>> c) {
     //   final MqttPublishMessage message = c[0].payload;
     //   final payload =
@@ -49,7 +76,7 @@ class MqttController with ChangeNotifier {
     client.connectionMessage = connMessage;
     client.keepAlivePeriod = 60;
     try {
-      await client.connect();
+      await client.connect(env.userName, env.password);
     } catch (e) {
       print('Exception: $e');
       client.disconnect();
