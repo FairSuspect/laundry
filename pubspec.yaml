@@ -10,13 +10,18 @@ environment:
   sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
+  dart_jsonwebtoken: ^2.4.0
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  gcloud: ^0.8.5
   mqtt_client: ^9.6.1
   path_provider: ^2.0.6
-
+  ini: '>=1.0.0'
+  test: '>=0.12.0'
+  dotenv: ^3.0.0
+  flutter_dotenv: ^5.0.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -32,3 +37,4 @@ flutter:
   assets:
     # Add assets from the images directory to the application.
     - assets/images/
+    - .env
